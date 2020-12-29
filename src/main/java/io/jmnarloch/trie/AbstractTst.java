@@ -128,6 +128,56 @@ abstract class AbstractTst<T> implements Trie<T> {
         return keys;
     }
 
+    @Override
+    public String filter(String key, String replace) {
+        StringBuilder result = new StringBuilder();
+        TstNode tempNode = root;
+        int position = 0;
+        int begin = 0;
+        while (position < key.length()) {
+            char c = key.charAt(position);
+            if (isSymbol(c)) {
+                if (tempNode == root) {
+                    result.append(c);
+                    ++begin;
+                }
+                ++position;
+                continue;
+            }
+            while (tempNode != null && position < key.length()) {
+                if (c == tempNode.c) {
+                    tempNode = moveNext(tempNode, c);
+                    if (tempNode.value != null) {
+                        result.append(replace);
+                        ++position;
+                        begin = position;
+                        tempNode = root;
+                        break;
+                    } else if (++position < key.length()) {
+                        c = key.charAt(position);
+                        while (isSymbol(c) && ++position < key.length()) {
+                            c = key.charAt(position);
+                        }
+                    }
+                } else {
+                    tempNode = moveNext(tempNode, c);
+                }
+            }
+            if (tempNode == null) {
+                result.append(key.charAt(begin));
+                position = ++begin;
+                tempNode = root;
+            }
+        }
+        result.append(key.substring(begin));
+        return result.toString();
+    }
+
+    private boolean isSymbol(char c) {
+        int ic = (int) c;
+        return (ic < 0x2E80 || ic > 0x9FFF) && (ic < 0x61 || ic > 0x7a) && (ic < 0x41 || ic > 0x5a);
+    }
+
     private T put(TstNode root, String key, T value) {
 
         int index = 0;

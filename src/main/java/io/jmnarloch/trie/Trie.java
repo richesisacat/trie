@@ -115,4 +115,11 @@ public interface Trie<T> {
      * @return all keys in the trie
      */
     Set<String> keySet();
+
+    /**
+     * replace sensitive word in key string.
+     * @return after filter string
+     */
+    String filter(String key, String replace);
+
 }

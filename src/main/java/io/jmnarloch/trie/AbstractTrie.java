@@ -148,6 +148,46 @@ abstract class AbstractTrie<T, N extends AbstractTrie.TrieNode<T, N>> implements
         return keys;
     }
 
+    @Override
+    public String filter(String key, String replace) {
+        StringBuilder result = new StringBuilder();
+        N tempNode = getRoot();
+        int begin = 0;
+        int position = 0;
+        while (position < key.length()) {
+            char c = key.charAt(position);
+            if (isSymbol(c)) {
+                if (tempNode == root) {
+                    result.append(c);
+                    ++begin;
+                }
+                ++position;
+                continue;
+            }
+            tempNode = tempNode.getNext(c);
+            if (tempNode == null) {
+                result.append(key.charAt(begin));
+                position = ++begin;
+                tempNode = getRoot();
+            } else if (tempNode.getValue() != null) {
+                result.append(replace);
+                ++position;
+                begin = position;
+                tempNode = getRoot();
+            } else {
+                ++position;
+            }
+        }
+        result.append(key.substring(begin));
+        return result.toString();
+    }
+
+    private boolean isSymbol(char c) {
+        int ic = (int) c;
+        // return ic < 0x2E80 || ic > 0x9FFF;
+        return (ic < 0x2E80 || ic > 0x9FFF) && (ic < 0x61 || ic > 0x7a) && (ic < 0x41 || ic > 0x5a);
+    }
+
     private T put(N root, String key, T value) {
 
         N node = root;
