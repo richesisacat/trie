@@ -136,7 +136,7 @@ abstract class AbstractTst<T> implements Trie<T> {
         int begin = 0;
         while (position < key.length()) {
             char c = key.charAt(position);
-            if (isSymbol(c)) {
+            if (TrieUtil.isSymbol(c)) {
                 if (tempNode == root) {
                     result.append(c);
                     ++begin;
@@ -155,7 +155,7 @@ abstract class AbstractTst<T> implements Trie<T> {
                         break;
                     } else if (++position < key.length()) {
                         c = key.charAt(position);
-                        while (isSymbol(c) && ++position < key.length()) {
+                        while (TrieUtil.isSymbol(c) && ++position < key.length()) {
                             c = key.charAt(position);
                         }
                     }
@@ -171,11 +171,6 @@ abstract class AbstractTst<T> implements Trie<T> {
         }
         result.append(key.substring(begin));
         return result.toString();
-    }
-
-    private boolean isSymbol(char c) {
-        int ic = (int) c;
-        return (ic < 0x2E80 || ic > 0x9FFF) && (ic < 0x61 || ic > 0x7a) && (ic < 0x41 || ic > 0x5a);
     }
 
     private T put(TstNode root, String key, T value) {
